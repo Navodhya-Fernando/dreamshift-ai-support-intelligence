@@ -81,6 +81,50 @@ The system identifies:
 
 ---
 
+## System Architecture
+
+```mermaid
+flowchart TD
+    U[Website Visitor]
+    W[DreamShift Website]
+    C[Premium Chat Widget]
+    API[Cloudflare Worker API]
+
+    CHAT[/POST /chat/]
+    EVENT[/POST /event/]
+    INGEST[/POST /ingest/]
+    ANALYTICS[/GET /analytics/summary/]
+
+    AI[Cloudflare Workers AI]
+    EMB[Embedding Model]
+    LLM[Chat Model]
+    VEC[(Cloudflare Vectorize)]
+    D1[(Cloudflare D1 Analytics DB)]
+    KB[Markdown Knowledge Base]
+    DASH[Private Analytics Dashboard]
+
+    U --> W
+    W --> C
+    C --> CHAT
+    C --> EVENT
+
+    CHAT --> API
+    EVENT --> API
+    INGEST --> API
+    ANALYTICS --> API
+
+    API --> EMB
+    EMB --> VEC
+    API --> LLM
+    API --> D1
+    KB --> INGEST
+    INGEST --> VEC
+    DASH --> ANALYTICS
+    ANALYTICS --> D1
+```
+
+---
+
 ## Tech Stack
 
 ### Core Platform
@@ -126,7 +170,7 @@ The system identifies:
 
 ---
 
-## Why This Project Reflects My Engineering Profile
+## Why This Project Is Significant?
 
 This project combines **software engineering**, **AI engineering**, and **data analytics** in a production-oriented system.
 
@@ -158,50 +202,6 @@ This project combines **software engineering**, **AI engineering**, and **data a
 * Created a lead scoring framework based on intent, CTA actions, objections, and buying signals.
 * Built content gap detection to improve the knowledge base over time.
 * Prepared the system for future predictive lead scoring and forecasting once enough conversion data is available.
-
----
-
-## System Architecture
-
-```mermaid
-flowchart TD
-    U[Website Visitor]
-    W[DreamShift Website]
-    C[Premium Chat Widget]
-    API[Cloudflare Worker API]
-
-    CHAT[/POST /chat/]
-    EVENT[/POST /event/]
-    INGEST[/POST /ingest/]
-    ANALYTICS[/GET /analytics/summary/]
-
-    AI[Cloudflare Workers AI]
-    EMB[Embedding Model]
-    LLM[Chat Model]
-    VEC[(Cloudflare Vectorize)]
-    D1[(Cloudflare D1 Analytics DB)]
-    KB[Markdown Knowledge Base]
-    DASH[Private Analytics Dashboard]
-
-    U --> W
-    W --> C
-    C --> CHAT
-    C --> EVENT
-
-    CHAT --> API
-    EVENT --> API
-    INGEST --> API
-    ANALYTICS --> API
-
-    API --> EMB
-    EMB --> VEC
-    API --> LLM
-    API --> D1
-    KB --> INGEST
-    INGEST --> VEC
-    DASH --> ANALYTICS
-    ANALYTICS --> D1
-```
 
 ---
 
