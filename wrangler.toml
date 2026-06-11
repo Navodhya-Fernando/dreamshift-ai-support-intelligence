@@ -7,6 +7,10 @@ binding = "AI"
 
 [[vectorize]]
 binding   = "VEC"
-index_name = "dreamshift-kb"   # must exist in your account; dims must be 384
+index_name = "dreamshift-kb" 
 
-# (optional) If you're using preview envs, add [env.preview] with the same bindings
+[[d1_databases]]
+binding = "dreamshift_ai_db"
+database_name = "dreamshift-ai-db"
+database_id = "a95f35ee-b9a0-4c55-9c27-0d1429a4b60e"
+migrations_dir = "migrations"

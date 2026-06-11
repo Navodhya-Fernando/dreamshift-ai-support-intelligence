@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DreamShift Chatbot Analytics</title>
+
+  <style>
+    :root {
+      --dark: #24101a;
+      --plum: #411c30;
+      --gold: #f6b900;
+      --yellow: #ffe500;
+      --white: #ffffff;
+      --bg: #fbfaf7;
+      --card: #ffffff;
+      --border: rgba(65, 28, 48, 0.13);
+      --muted: rgba(36, 16, 26, 0.62);
+      --soft: rgba(246, 185, 0, 0.12);
+      --soft-plum: rgba(65, 28, 48, 0.06);
+      --shadow: 0 18px 45px rgba(36, 16, 26, 0.12);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 229, 0, 0.16), transparent 30%),
+        radial-gradient(circle at top right, rgba(65, 28, 48, 0.12), transparent 28%),
+        var(--bg);
+      color: var(--dark);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--dark), var(--plum));
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    input,
+    select,
+    button {
+      font-family: inherit;
+    }
+
+    .input,
+    .select {
+      height: 42px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--dark);
+      border-radius: 999px;
+      padding: 0 14px;
+      outline: none;
+      min-width: 160px;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: rgba(246, 185, 0, 0.9);
+      box-shadow: 0 0 0 4px rgba(246, 185, 0, 0.15);
+    }
+
+    .btn {
+      height: 42px;
+      border: none;
+      border-radius: 999px;
+      padding: 0 16px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--gold), var(--yellow));
+      color: var(--dark);
+      box-shadow: 0 10px 22px rgba(246, 185, 0, 0.2);
+    }
+
+    .btn.secondary {
+      background: var(--white);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .notice {
+      background: rgba(65, 28, 48, 0.06);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .notice strong {
+      color: var(--dark);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(6, 1fr);
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .kpi {
+      padding: 17px;
+      min-height: 132px;
+      position: relative;
+    }
+
+    .kpi::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: -24px;
+      width: 78px;
+      height: 78px;
+      border-radius: 999px;
+      background: rgba(246, 185, 0, 0.12);
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      margin-top: 12px;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .kpi-help {
+      margin-top: 10px;
+      font-size: 12.5px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .section-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+      margin-bottom: 16px;
+    }
+
+    .three-grid {
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 16px;
+    }
+
+    .card-header {
+      padding: 18px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .card-subtitle {
+      margin-top: 5px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .card-body {
+      padding: 16px 18px 18px;
+    }
+
+    .bar-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      gap: 7px;
+    }
+
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .bar-name {
+      font-weight: 750;
+    }
+
+    .bar-count {
+      color: var(--muted);
+    }
+
+    .bar-track {
+      height: 10px;
+      background: rgba(65, 28, 48, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--plum), var(--gold));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .recommendations {
+      display: grid;
+      gap: 12px;
+    }
+
+    .rec {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, rgba(246, 185, 0, 0.07));
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .rec-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .rec-title {
+      font-weight: 850;
+      letter-spacing: -0.01em;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid var(--border);
+      background: var(--white);
+      white-space: nowrap;
+    }
+
+    .pill.high {
+      background: rgba(255, 229, 0, 0.36);
+      border-color: rgba(246, 185, 0, 0.42);
+    }
+
+    .pill.medium {
+      background: rgba(246, 185, 0, 0.16);
+    }
+
+    .pill.low {
+      background: rgba(65, 28, 48, 0.06);
+    }
+
+    .rec-text {
+      margin-top: 9px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .rec-action {
+      margin-top: 9px;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 8px;
+      border-bottom: 1px solid rgba(65, 28, 48, 0.08);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .lead-msg {
+      max-width: 340px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 12px 0;
+    }
+
+    .trend {
+      width: 100%;
+      height: 220px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(246, 185, 0, 0.08), transparent),
+        var(--white);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .trend svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 18px 0 4px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    @media (max-width: 1180px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .three-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        padding: 18px;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .input {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .input,
+      .select,
+      .btn {
+        width: 100%;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">DS</div>
+        <div>
+          <h1>DreamShift Chatbot Analytics</h1>
+          <div class="subtitle">Simple business insights from chatbot conversations, lead signals, campaigns, and CTAs.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="controls">
+          <input id="adminKeyInput" class="input" type="password" placeholder="Admin key" />
+          <select id="daysSelect" class="select">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last 365 days</option>
+          </select>
+          <button id="saveKeyBtn" class="btn secondary">Save Key</button>
+          <button id="refreshBtn" class="btn">Refresh</button>
+        </div>
+        <div id="statusText" class="status">Not loaded yet</div>
+      </div>
+    </header>
+
+    <div id="notice" class="notice"></div>
+
+    <section class="grid kpi-grid">
+      <div class="card kpi">
+        <div class="kpi-label">Conversations</div>
+        <div id="sessionsKpi" class="kpi-value">—</div>
+        <div class="kpi-help">Total chatbot sessions in selected period.</div>
+      </div>
+
+      <div class="card kpi">
+        <div class="kpi-label">User Messages</div>
+        <div id="messagesKpi" class="kpi-value">—</div>
+        <div class="kpi-help">Questions and replies sent by users.</div>
+      </div>
+
+      <div class="card kpi">
+        <div class="kpi-label">Hot Leads</div>
+        <div id="hotLeadsKpi" class="kpi-value">—</div>
+        <div id="hotRateKpi" class="kpi-help">—</div>
+      </div>
+
+      <div class="card kpi">
+        <div class="kpi-label">Handoff Rate</div>
+        <div id="handoffKpi" class="kpi-value">—</div>
+        <div class="kpi-help">Users worth moving to WhatsApp, booking, or sales follow-up.</div>
+      </div>
+
+      <div class="card kpi">
+        <div class="kpi-label">WhatsApp Clicks</div>
+        <div id="whatsappKpi" class="kpi-value">—</div>
+        <div id="whatsappRateKpi" class="kpi-help">—</div>
+      </div>
+
+      <div class="card kpi">
+        <div class="kpi-label">Booking Clicks</div>
+        <div id="bookingKpi" class="kpi-value">—</div>
+        <div id="bookingRateKpi" class="kpi-help">—</div>
+      </div>
+    </section>
+
+    <section class="grid section-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Trend Overview</h2>
+            <div class="card-subtitle">Daily sessions, hot leads, and handoff signals.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="trendChart" class="trend"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Recommended Actions</h2>
+            <div class="card-subtitle">Plain-English prescriptive analytics for the team.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="recommendations" class="recommendations"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid three-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">What People Ask</h2>
+            <div class="card-subtitle">Top chatbot intents in business language.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="topIntents" class="bar-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Common Objections</h2>
+            <div class="card-subtitle">Sales concerns appearing in chat.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="topObjections" class="bar-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">CTA Activity</h2>
+            <div class="card-subtitle">Actions users take inside the chatbot.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="eventCounts" class="bar-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid section-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Recent Hot Leads</h2>
+            <div class="card-subtitle">Prioritised sessions for sales follow-up.</div>
+          </div>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Lead Signal</th>
+                <th>Source</th>
+                <th>Last Message</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentHotLeads"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Campaign Performance</h2>
+            <div class="card-subtitle">Which sources bring stronger leads.</div>
+          </div>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Sessions</th>
+                <th>Hot Leads</th>
+                <th>Handoff</th>
+              </tr>
+            </thead>
+            <tbody id="sourcePerformance"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid section-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Content Gaps</h2>
+            <div class="card-subtitle">Questions the bot could not answer safely.</div>
+          </div>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Reason</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="contentGaps"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Package Interest</h2>
+            <div class="card-subtitle">Which package users mention or show interest in.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="packageInterest" class="bar-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      DreamShift analytics dashboard. Keep this page private. Do not publish with your admin key exposed.
+    </div>
+  </main>
+
+  <script>
+    const WORKER_URL = "https://dreamshift-bot.dreamshift-kb.workers.dev";
+    const ADMIN_KEY_STORAGE = "dreamshift_dashboard_admin_key";
+
+    const friendlyIntent = {
+      general_rag: "General career questions",
+      packages_overview: "Package comparison",
+      pricing_general: "Pricing questions",
+      essential_pricing: "Essential pricing",
+      advanced_pricing: "Advanced pricing",
+      ultimate_pricing: "Ultimate pricing",
+      payment_installments: "Instalment questions",
+      job_application_support: "Done-for-you applications",
+      urgent_delivery: "Urgent delivery",
+      package_recommendation: "Package recommendation",
+      consultation: "Consultation interest",
+      price_objection: "Price concern",
+      custom_package: "Custom package request",
+      not_in_australia: "Not in Australia yet",
+      no_australian_experience: "No Australian experience concern",
+      industry_support: "Industry support question",
+      individual_services: "Individual service question",
+      refund_policy: "Refund policy question",
+      interview_guarantee: "Interview guarantee question",
+      job_guarantee: "Job guarantee question",
+      process: "Process question",
+      revisions: "Revision question",
+      visa_work_rights: "Visa/work-rights question",
+      missed_call_reschedule: "Reschedule request",
+      interview_preparation: "Interview prep question",
+      whatsapp_clicked: "WhatsApp clicked",
+      booking_clicked: "Booking clicked",
+      contact_clicked: "Contact clicked",
+    };
+
+    const friendlyObjection = {
+      price: "Price concern",
+      timing: "Urgent timing",
+      not_in_australia: "Not in Australia yet",
+      missed_call_reschedule: "Missed/reschedule call",
+      wants_done_for_you_applications: "Wants job applications done for them",
+    };
+
+    const friendlyEvent = {
+      chat_interaction: "Chat interactions",
+      chat_opened: "Chat opened",
+      quick_action_clicked: "Quick action clicked",
+      whatsapp_clicked: "WhatsApp clicked",
+      booking_clicked: "Book/contact clicked",
+      contact_clicked: "Contact clicked",
+    };
+
+    const friendlyPackage = {
+      unknown: "Not clear yet",
+      essential: "Essential",
+      advanced: "Advanced",
+      ultimate: "Ultimate",
+    };
+
+    const adminKeyInput = document.getElementById("adminKeyInput");
+    const daysSelect = document.getElementById("daysSelect");
+    const saveKeyBtn = document.getElementById("saveKeyBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const statusText = document.getElementById("statusText");
+    const notice = document.getElementById("notice");
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function number(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function fmt(value) {
+      return number(value).toLocaleString();
+    }
+
+    function pct(value) {
+      return `${fmt(value)}%`;
+    }
+
+    function labelIntent(value) {
+      return friendlyIntent[value] || value || "Unknown";
+    }
+
+    function labelObjection(value) {
+      return friendlyObjection[value] || value || "Unknown";
+    }
+
+    function labelEvent(value) {
+      return friendlyEvent[value] || value || "Unknown";
+    }
+
+    function labelPackage(value) {
+      return friendlyPackage[value] || value || "Unknown";
+    }
+
+    function showNotice(html) {
+      notice.style.display = "block";
+      notice.innerHTML = html;
+    }
+
+    function hideNotice() {
+      notice.style.display = "none";
+      notice.innerHTML = "";
+    }
+
+    function getAdminKey() {
+      return adminKeyInput.value.trim() || localStorage.getItem(ADMIN_KEY_STORAGE) || "";
+    }
+
+    function saveAdminKey() {
+      const key = adminKeyInput.value.trim();
+
+      if (!key) {
+        showNotice("<strong>Missing key:</strong> paste your ADMIN_KEY first.");
+        return;
+      }
+
+      localStorage.setItem(ADMIN_KEY_STORAGE, key);
+      showNotice("<strong>Saved:</strong> Admin key saved in this browser for local dashboard use.");
+    }
+
+    function setKpis(data) {
+      const o = data.overview || {};
+
+      $("sessionsKpi").textContent = fmt(o.sessions_30d);
+      $("messagesKpi").textContent = fmt(o.user_messages_30d);
+      $("hotLeadsKpi").textContent = fmt(o.hot_leads_30d);
+      $("handoffKpi").textContent = pct(o.handoff_rate);
+      $("whatsappKpi").textContent = fmt(o.whatsapp_clicks_30d);
+      $("bookingKpi").textContent = fmt(o.booking_clicks_30d);
+
+      $("hotRateKpi").textContent = `${pct(o.hot_lead_rate)} of conversations became hot leads.`;
+      $("whatsappRateKpi").textContent = `${pct(o.whatsapp_click_rate)} of sessions clicked WhatsApp.`;
+      $("bookingRateKpi").textContent = `${pct(o.booking_click_rate)} of sessions clicked Book / Contact.`;
+    }
+
+    function renderBars(containerId, rows, options = {}) {
+      const container = $(containerId);
+      const labelFn = options.labelFn || ((x) => x);
+      const countKey = options.countKey || "count";
+
+      if (!rows || rows.length === 0) {
+        container.innerHTML = `<div class="empty">No data yet.</div>`;
+        return;
+      }
+
+      const max = Math.max(...rows.map((row) => number(row[countKey])), 1);
+
+      container.innerHTML = rows.map((row) => {
+        const rawName = row.intent || row.objection || row.event_name || row.package_interest || row.name || "Unknown";
+        const count = number(row[countKey]);
+        const width = Math.max(6, Math.round((count / max) * 100));
+
+        return `
+          <div class="bar-row">
+            <div class="bar-meta">
+              <div class="bar-name">${escapeHtml(labelFn(rawName))}</div>
+              <div class="bar-count">${fmt(count)}</div>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${width}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderRecommendations(rows) {
+      const container = $("recommendations");
+
+      if (!rows || rows.length === 0) {
+        container.innerHTML = `<div class="empty">No recommendations yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = rows.map((row) => `
+        <div class="rec">
+          <div class="rec-top">
+            <div class="rec-title">${escapeHtml(row.title || "Recommendation")}</div>
+            <span class="pill ${escapeHtml(row.priority || "low")}">${escapeHtml(row.priority || "low")}</span>
+          </div>
+          <div class="rec-text">${escapeHtml(row.insight || "")}</div>
+          <div class="rec-action">Action: ${escapeHtml(row.action || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function getActionForLead(row) {
+      if (row.last_intent === "job_application_support") {
+        return "Follow up with Ultimate Career Package.";
+      }
+
+      if (row.last_intent === "payment_installments") {
+        return "Explain instalment option and invite to consultation.";
+      }
+
+      if (row.objection === "price") {
+        return "Use value framing + instalment message.";
+      }
+
+      if (row.last_intent === "packages_overview" || row.last_intent === "pricing_general") {
+        return "Offer package recommendation and booking link.";
+      }
+
+      if (row.handoff_recommended) {
+        return "Move to WhatsApp or free consultation.";
+      }
+
+      return "Review conversation before follow-up.";
+    }
+
+    function renderRecentHotLeads(rows) {
+      const tbody = $("recentHotLeads");
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty">No hot leads yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map((row) => {
+        const source = row.utm_source || "unknown";
+        const medium = row.utm_medium || "unknown";
+        const campaign = row.utm_campaign || "unknown";
+
+        return `
+          <tr>
+            <td>
+              <strong>${escapeHtml(labelIntent(row.last_intent || row.intent || "CTA click"))}</strong>
+              <div class="small muted">
+                ${escapeHtml(row.lead_temperature || "unknown")} lead · ${escapeHtml(row.total_messages ?? 0)} interactions
+              </div>
+            </td>
+            <td>
+              ${escapeHtml(source)}
+              <div class="small muted">${escapeHtml(medium)} · ${escapeHtml(campaign)}</div>
+            </td>
+            <td>
+              <div class="lead-msg">${escapeHtml(row.last_user_message || "No chat message. CTA/event-only lead.")}</div>
+            </td>
+            <td>
+              <strong>${escapeHtml(getActionForLead(row))}</strong>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderSourcePerformance(rows) {
+      const tbody = $("sourcePerformance");
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty">No campaign/source data yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map((row) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(row.source || "unknown")}</strong>
+            <div class="small muted">${escapeHtml(row.medium || "unknown")} · ${escapeHtml(row.campaign || "unknown")}</div>
+          </td>
+          <td>${fmt(row.sessions)}</td>
+          <td>
+            ${fmt(row.hot_leads)}
+            <div class="small muted">${pct(row.hot_lead_rate)} hot lead rate</div>
+          </td>
+          <td>
+            ${fmt(row.handoffs)}
+            <div class="small muted">${pct(row.handoff_rate)} handoff rate</div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function renderContentGaps(rows) {
+      const tbody = $("contentGaps");
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="empty">No content gaps found. The bot is answering safely so far.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map((row) => `
+        <tr>
+          <td>${escapeHtml(row.question || "")}</td>
+          <td class="muted">${escapeHtml(row.reason || "")}</td>
+          <td><span class="pill medium">${escapeHtml(row.status || "open")}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderTrend(rows) {
+      const container = $("trendChart");
+
+      if (!rows || rows.length === 0) {
+        container.innerHTML = `<div class="empty">No trend data yet.</div>`;
+        return;
+      }
+
+      const width = 760;
+      const height = 190;
+      const pad = 24;
+
+      const maxValue = Math.max(
+        ...rows.map((r) => Math.max(number(r.sessions), number(r.hot_leads), number(r.handoffs))),
+        1
+      );
+
+      function x(i) {
+        if (rows.length === 1) return width / 2;
+        return pad + (i * (width - pad * 2)) / (rows.length - 1);
+      }
+
+      function y(value) {
+        return height - pad - (number(value) / maxValue) * (height - pad * 2);
+      }
+
+      function pathFor(key) {
+        return rows.map((row, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(row[key])}`).join(" ");
+      }
+
+      const labels = rows.map((row, i) => {
+        if (rows.length > 12 && i % Math.ceil(rows.length / 6) !== 0 && i !== rows.length - 1) return "";
+        return `
+          <text x="${x(i)}" y="${height - 3}" text-anchor="middle" font-size="10" fill="rgba(36,16,26,.55)">
+            ${escapeHtml(String(row.date || "").slice(5))}
+          </text>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+          <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" stroke="rgba(65,28,48,.15)" />
+          <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${height - pad}" stroke="rgba(65,28,48,.15)" />
+
+          <path d="${pathFor("sessions")}" fill="none" stroke="#411c30" stroke-width="3" stroke-linecap="round" />
+          <path d="${pathFor("hot_leads")}" fill="none" stroke="#f6b900" stroke-width="3" stroke-linecap="round" />
+          <path d="${pathFor("handoffs")}" fill="none" stroke="#24101a" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" />
+
+          ${rows.map((row, i) => `
+            <circle cx="${x(i)}" cy="${y(row.sessions)}" r="4" fill="#411c30"></circle>
+            <circle cx="${x(i)}" cy="${y(row.hot_leads)}" r="4" fill="#f6b900"></circle>
+          `).join("")}
+
+          ${labels}
+        </svg>
+
+        <div class="small muted" style="margin-top:8px;">
+          <strong style="color:#411c30;">Sessions</strong> ·
+          <strong style="color:#b38400;">Hot leads</strong> ·
+          <strong style="color:#24101a;">Handoffs</strong>
+        </div>
+      `;
+    }
+
+    function renderDashboard(data) {
+      setKpis(data);
+      renderTrend(data.daily_trend);
+      renderRecommendations(data.recommendations);
+
+      renderBars("topIntents", data.top_intents, { labelFn: labelIntent });
+      renderBars("topObjections", data.top_objections, { labelFn: labelObjection });
+      renderBars("eventCounts", data.event_counts, { labelFn: labelEvent });
+      renderBars("packageInterest", data.package_interest, { labelFn: labelPackage });
+
+      renderRecentHotLeads(data.recent_hot_leads);
+      renderSourcePerformance(data.source_performance);
+      renderContentGaps(data.content_gaps);
+    }
+
+    async function loadDashboard() {
+      const key = getAdminKey();
+
+      if (!key) {
+        showNotice("<strong>Admin key needed:</strong> paste your ADMIN_KEY and click Save Key.");
+        return;
+      }
+
+      hideNotice();
+      refreshBtn.disabled = true;
+      statusText.textContent = "Loading...";
+
+      try {
+        const days = daysSelect.value;
+
+        const response = await fetch(`${WORKER_URL}/analytics/summary?days=${encodeURIComponent(days)}`, {
+          method: "GET",
+          headers: {
+            "x-admin-key": key,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || "Could not load analytics.");
+        }
+
+        renderDashboard(data);
+
+        const generated = new Date(data.generated_at);
+        statusText.textContent = `Updated ${generated.toLocaleString()} · ${data.period_days} days`;
+
+        if (number(data.overview?.sessions_30d) < 10) {
+          showNotice(
+            "<strong>Note:</strong> This dashboard is working, but current numbers are mostly test data. Percentages will become more meaningful after more real website traffic."
+          );
+        }
+      } catch (error) {
+        showNotice(`<strong>Error:</strong> ${escapeHtml(error.message)}. Check your ADMIN_KEY and Worker URL.`);
+        statusText.textContent = "Failed to load";
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    saveKeyBtn.addEventListener("click", () => {
+      saveAdminKey();
+      loadDashboard();
+    });
+
+    refreshBtn.addEventListener("click", loadDashboard);
+    daysSelect.addEventListener("change", loadDashboard);
+
+    const savedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
+    if (savedKey) {
+      adminKeyInput.value = savedKey;
+      loadDashboard();
+    } else {
+      showNotice("<strong>Welcome:</strong> paste your ADMIN_KEY to load the private analytics dashboard.");
+    }
+  </script>
+</body>
+</html>

@@ -7,7 +7,6 @@ build/
 
 # Environment / secrets
 .env
-.env.*
 *.pem
 *.key
 

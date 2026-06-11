@@ -1,0 +1,37 @@
+{
+  "kb_version": "dreamshift-australia-v1.1",
+  "market": "australia",
+  "currency": "AUD",
+  "files": [
+    "00-brand-and-chatbot-rules.md",
+    "01-services.md",
+    "02-packages-and-pricing.md",
+    "03-guarantee-refunds-revisions-terms.md",
+    "04-client-process.md",
+    "05-australia-job-search-guidance.md",
+    "06-industries-and-client-proof.md",
+    "07-faqs.md",
+    "08-sales-objections-and-replies.md",
+    "09-lead-qualification-and-handoff.md",
+    "10-content-gap-and-dashboard-tags.md",
+    "11-confirmed-sales-team-objections.md",
+    "README_KB_UPDATE.md"
+  ],
+  "business_rules": {
+    "push_packages_first": true,
+    "individual_services_available": true,
+    "installment_extra_charge_aud": 10,
+    "urgent_delivery": "refer_to_team_availability",
+    "guarantee": "interviews_not_jobs",
+    "essential_revisions": "unlimited_within_1_week",
+    "advanced_revisions": "unlimited_within_1_month",
+    "ultimate_revisions": "unlimited_within_1_month"
+  },
+  "confirmed_sales_objections": [
+    "price",
+    "timing",
+    "not_in_australia_at_the_moment",
+    "missed_call_rescheduling",
+    "wants_job_application_support"
+  ]
+}
