@@ -38,6 +38,10 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     .shell {
       max-width: 1440px;
       margin: 0 auto;
@@ -83,6 +87,7 @@
       margin-top: 6px;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.45;
     }
 
     .controls {
@@ -133,6 +138,17 @@
       background: var(--white);
       border: 1px solid var(--border);
       box-shadow: none;
+    }
+
+    .btn.danger {
+      background: var(--plum);
+      color: var(--white);
+      box-shadow: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .notice {
@@ -390,6 +406,18 @@
       line-height: 1.4;
     }
 
+    .question-text {
+      max-width: 420px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .answer-preview {
+      max-width: 380px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     .empty {
       color: var(--muted);
       font-size: 13px;
@@ -413,6 +441,15 @@
       overflow: visible;
     }
 
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
     .footer {
       color: var(--muted);
       font-size: 12px;
@@ -425,6 +462,130 @@
       color: var(--muted);
       margin-top: 8px;
       text-align: right;
+    }
+
+    .text-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--dark);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .text-btn:hover {
+      background: rgba(246, 185, 0, 0.12);
+      border-color: rgba(246, 185, 0, 0.55);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(36, 16, 26, 0.62);
+      backdrop-filter: blur(12px);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(560px, 100%);
+      background: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 28px;
+      box-shadow: 0 28px 90px rgba(36, 16, 26, 0.38);
+      overflow: hidden;
+    }
+
+    .modal-top {
+      background:
+        radial-gradient(circle at top left, rgba(255, 229, 0, 0.22), transparent 36%),
+        linear-gradient(135deg, var(--dark), var(--plum));
+      color: #fff;
+      padding: 26px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .modal-copy {
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .modal-body {
+      padding: 22px 26px 26px;
+    }
+
+    .password-input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0 15px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .password-input:focus {
+      border-color: rgba(246, 185, 0, 0.9);
+      box-shadow: 0 0 0 4px rgba(246, 185, 0, 0.14);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .detail-modal .modal-card {
+      width: min(900px, 100%);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 16px;
+    }
+
+    .detail-box {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(65, 28, 48, 0.035);
+    }
+
+    .detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .detail-content {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      color: var(--dark);
+      font-size: 14px;
+      max-height: 360px;
+      overflow: auto;
     }
 
     @media (max-width: 1180px) {
@@ -459,8 +620,8 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .input {
-        width: 100%;
+      .detail-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -478,7 +639,6 @@
         grid-template-columns: 1fr;
       }
 
-      .input,
       .select,
       .btn {
         width: 100%;
@@ -492,29 +652,85 @@
 </head>
 
 <body>
+  <div id="keyModal" class="modal open">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h2 class="modal-title">Enter dashboard admin key</h2>
+        <div class="modal-copy">
+          This private dashboard is protected. Paste the admin key shared by DreamShift to continue.
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <input id="modalAdminKeyInput" class="password-input" type="password" placeholder="Enter admin key" autocomplete="off" />
+        <div class="small muted" style="margin-top:10px;">
+          The key is saved only for this browser session. It is not added to the URL.
+        </div>
+
+        <div class="modal-actions">
+          <button id="modalLoginBtn" class="btn">Enter Dashboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="questionModal" class="modal detail-modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h2 class="modal-title">Question details</h2>
+        <div id="questionModalMeta" class="modal-copy"></div>
+      </div>
+
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-box">
+            <div class="detail-label">User question</div>
+            <div id="modalQuestionText" class="detail-content"></div>
+          </div>
+
+          <div class="detail-box">
+            <div class="detail-label">Assistant answer</div>
+            <div id="modalAnswerText" class="detail-content"></div>
+          </div>
+        </div>
+
+        <div class="detail-box" style="margin-top:16px;">
+          <div class="detail-label">Session and source details</div>
+          <div id="modalSourceText" class="detail-content"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button id="closeQuestionModalBtn" class="btn secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <main class="shell">
     <header class="topbar">
       <div class="brand">
         <div class="logo">DS</div>
         <div>
           <h1>DreamShift Chatbot Analytics</h1>
-          <div class="subtitle">Simple business insights from chatbot conversations, lead signals, campaigns, and CTAs.</div>
+          <div class="subtitle">
+            Business-friendly insights from chatbot conversations, lead signals, campaigns, CTA clicks, and customer questions.
+          </div>
         </div>
       </div>
 
       <div>
         <div class="controls">
-          <input id="adminKeyInput" class="input" type="password" placeholder="Admin key" />
           <select id="daysSelect" class="select">
             <option value="7">Last 7 days</option>
             <option value="30" selected>Last 30 days</option>
             <option value="90">Last 90 days</option>
             <option value="365">Last 365 days</option>
           </select>
-          <button id="saveKeyBtn" class="btn secondary">Save Key</button>
           <button id="refreshBtn" class="btn">Refresh</button>
+          <button id="changeKeyBtn" class="btn secondary">Change Key</button>
+          <button id="forgetKeyBtn" class="btn danger">Forget Key</button>
         </div>
-        <div id="statusText" class="status">Not loaded yet</div>
+        <div id="statusText" class="status">Locked</div>
       </div>
     </header>
 
@@ -703,14 +919,47 @@
       </div>
     </section>
 
+    <section class="card" style="margin-top:16px;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">All Questions Asked</h2>
+          <div class="card-subtitle">
+            Full question history for the team. Use “View” to see the user question, bot answer, source, and lead context.
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Question</th>
+              <th>Intent</th>
+              <th>Lead</th>
+              <th>Source</th>
+              <th>Answer Preview</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody id="allQuestions"></tbody>
+        </table>
+
+        <div class="table-footer">
+          <div id="questionsCountText" class="small muted">No questions loaded yet.</div>
+          <button id="viewMoreQuestionsBtn" class="btn secondary">View More Questions</button>
+        </div>
+      </div>
+    </section>
+
     <div class="footer">
-      DreamShift analytics dashboard. Keep this page private. Do not publish with your admin key exposed.
+      DreamShift analytics dashboard. Keep this page private. Do not publish or paste the admin key publicly.
     </div>
   </main>
 
   <script>
     const WORKER_URL = "https://dreamshift-bot.dreamshift-kb.workers.dev";
-    const ADMIN_KEY_STORAGE = "dreamshift_dashboard_admin_key";
+    const ADMIN_KEY_STORAGE = "dreamshift_dashboard_admin_key_session";
 
     const friendlyIntent = {
       general_rag: "General career questions",
@@ -767,12 +1016,28 @@
       ultimate: "Ultimate",
     };
 
-    const adminKeyInput = document.getElementById("adminKeyInput");
+    const keyModal = document.getElementById("keyModal");
+    const modalAdminKeyInput = document.getElementById("modalAdminKeyInput");
+    const modalLoginBtn = document.getElementById("modalLoginBtn");
     const daysSelect = document.getElementById("daysSelect");
-    const saveKeyBtn = document.getElementById("saveKeyBtn");
     const refreshBtn = document.getElementById("refreshBtn");
+    const changeKeyBtn = document.getElementById("changeKeyBtn");
+    const forgetKeyBtn = document.getElementById("forgetKeyBtn");
     const statusText = document.getElementById("statusText");
     const notice = document.getElementById("notice");
+    const viewMoreQuestionsBtn = document.getElementById("viewMoreQuestionsBtn");
+
+    const questionModal = document.getElementById("questionModal");
+    const questionModalMeta = document.getElementById("questionModalMeta");
+    const modalQuestionText = document.getElementById("modalQuestionText");
+    const modalAnswerText = document.getElementById("modalAnswerText");
+    const modalSourceText = document.getElementById("modalSourceText");
+    const closeQuestionModalBtn = document.getElementById("closeQuestionModalBtn");
+
+    let questionRows = [];
+    let questionsOffset = 0;
+    let questionsTotal = 0;
+    const questionsLimit = 25;
 
     function $(id) {
       return document.getElementById(id);
@@ -798,6 +1063,25 @@
 
     function pct(value) {
       return `${fmt(value)}%`;
+    }
+
+    function truncate(value, length = 120) {
+      const text = String(value || "");
+      return text.length > length ? `${text.slice(0, length)}...` : text;
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+
+      const normalized = String(value).includes("T")
+        ? String(value)
+        : String(value).replace(" ", "T") + "Z";
+
+      const date = new Date(normalized);
+
+      if (Number.isNaN(date.getTime())) return value;
+
+      return date.toLocaleString();
     }
 
     function labelIntent(value) {
@@ -826,20 +1110,64 @@
       notice.innerHTML = "";
     }
 
-    function getAdminKey() {
-      return adminKeyInput.value.trim() || localStorage.getItem(ADMIN_KEY_STORAGE) || "";
+    function openKeyModal() {
+      keyModal.classList.add("open");
+      document.body.classList.add("modal-open");
+      setTimeout(() => modalAdminKeyInput.focus(), 50);
     }
 
-    function saveAdminKey() {
-      const key = adminKeyInput.value.trim();
+    function closeKeyModal() {
+      keyModal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+    }
+
+    function getAdminKey() {
+      return sessionStorage.getItem(ADMIN_KEY_STORAGE) || "";
+    }
+
+    function saveAdminKeyFromModal() {
+      const key = modalAdminKeyInput.value.trim();
 
       if (!key) {
-        showNotice("<strong>Missing key:</strong> paste your ADMIN_KEY first.");
+        showNotice("<strong>Missing key:</strong> paste the admin key first.");
         return;
       }
 
-      localStorage.setItem(ADMIN_KEY_STORAGE, key);
-      showNotice("<strong>Saved:</strong> Admin key saved in this browser for local dashboard use.");
+      sessionStorage.setItem(ADMIN_KEY_STORAGE, key);
+      modalAdminKeyInput.value = "";
+      closeKeyModal();
+      loadDashboard();
+    }
+
+    function clearAdminKey() {
+      sessionStorage.removeItem(ADMIN_KEY_STORAGE);
+      statusText.textContent = "Locked";
+      showNotice("<strong>Logged out:</strong> Admin key removed from this browser session.");
+      openKeyModal();
+    }
+
+    async function fetchJson(path) {
+      const key = getAdminKey();
+
+      if (!key) {
+        openKeyModal();
+        throw new Error("Admin key required.");
+      }
+
+      const response = await fetch(`${WORKER_URL}${path}`, {
+        method: "GET",
+        headers: {
+          "x-admin-key": key,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "Could not load dashboard data.");
+      }
+
+      return data;
     }
 
     function setKpis(data) {
@@ -909,11 +1237,11 @@
     }
 
     function getActionForLead(row) {
-      if (row.last_intent === "job_application_support") {
+      if (row.last_intent === "job_application_support" || row.intent === "job_application_support") {
         return "Follow up with Ultimate Career Package.";
       }
 
-      if (row.last_intent === "payment_installments") {
+      if (row.last_intent === "payment_installments" || row.intent === "payment_installments") {
         return "Explain instalment option and invite to consultation.";
       }
 
@@ -921,7 +1249,7 @@
         return "Use value framing + instalment message.";
       }
 
-      if (row.last_intent === "packages_overview" || row.last_intent === "pricing_general") {
+      if (row.last_intent === "packages_overview" || row.intent === "packages_overview" || row.last_intent === "pricing_general") {
         return "Offer package recommendation and booking link.";
       }
 
@@ -1044,6 +1372,7 @@
 
       const labels = rows.map((row, i) => {
         if (rows.length > 12 && i % Math.ceil(rows.length / 6) !== 0 && i !== rows.length - 1) return "";
+
         return `
           <text x="${x(i)}" y="${height - 3}" text-anchor="middle" font-size="10" fill="rgba(36,16,26,.55)">
             ${escapeHtml(String(row.date || "").slice(5))}
@@ -1091,11 +1420,145 @@
       renderContentGaps(data.content_gaps);
     }
 
+    function renderAllQuestions() {
+      const tbody = $("allQuestions");
+
+      if (!questionRows || questionRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">No questions found for this period.</td></tr>`;
+        $("questionsCountText").textContent = "No questions loaded.";
+        viewMoreQuestionsBtn.style.display = "none";
+        return;
+      }
+
+      tbody.innerHTML = questionRows.map((row, index) => {
+        const source = row.utm_source || "unknown";
+        const medium = row.utm_medium || "unknown";
+        const campaign = row.utm_campaign || "unknown";
+        const intent = labelIntent(row.intent);
+        const lead = row.lead_temperature || "unknown";
+        const answer = row.answer || "No assistant answer found.";
+
+        return `
+          <tr>
+            <td>
+              ${escapeHtml(formatDate(row.created_at))}
+              <div class="small muted">${escapeHtml(row.session_id || "")}</div>
+            </td>
+            <td>
+              <div class="question-text">${escapeHtml(truncate(row.question, 130))}</div>
+            </td>
+            <td>
+              <strong>${escapeHtml(intent)}</strong>
+              <div class="small muted">${escapeHtml(row.answer_mode || "—")}</div>
+            </td>
+            <td>
+              <span class="pill ${lead === "hot" ? "high" : lead === "warm" ? "medium" : "low"}">${escapeHtml(lead)}</span>
+              <div class="small muted" style="margin-top:6px;">
+                ${row.objection ? escapeHtml(labelObjection(row.objection)) : "No objection"}
+              </div>
+            </td>
+            <td>
+              ${escapeHtml(source)}
+              <div class="small muted">${escapeHtml(medium)} · ${escapeHtml(campaign)}</div>
+            </td>
+            <td>
+              <div class="answer-preview">${escapeHtml(truncate(answer, 120))}</div>
+            </td>
+            <td>
+              <button class="text-btn" data-question-index="${index}">View</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      $("questionsCountText").textContent = `Showing ${questionRows.length.toLocaleString()} of ${questionsTotal.toLocaleString()} questions.`;
+
+      if (questionRows.length >= questionsTotal) {
+        viewMoreQuestionsBtn.style.display = "none";
+      } else {
+        viewMoreQuestionsBtn.style.display = "inline-flex";
+      }
+
+      tbody.querySelectorAll("[data-question-index]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.getAttribute("data-question-index"));
+          openQuestionDetails(questionRows[index]);
+        });
+      });
+    }
+
+    function openQuestionDetails(row) {
+      if (!row) return;
+
+      questionModalMeta.textContent = `${formatDate(row.created_at)} · ${labelIntent(row.intent)} · ${row.lead_temperature || "unknown"} lead`;
+
+      modalQuestionText.textContent = row.question || "No question found.";
+      modalAnswerText.textContent = row.answer || "No assistant answer found.";
+
+      modalSourceText.textContent = [
+        `Session ID: ${row.session_id || "unknown"}`,
+        `Visitor ID: ${row.visitor_id || "unknown"}`,
+        `Source: ${row.utm_source || "unknown"}`,
+        `Medium: ${row.utm_medium || "unknown"}`,
+        `Campaign: ${row.utm_campaign || "unknown"}`,
+        `Page URL: ${row.page_url || "unknown"}`,
+        `Package interest: ${labelPackage(row.package_interest)}`,
+        `Objection: ${row.objection ? labelObjection(row.objection) : "None"}`,
+        `Handoff recommended: ${row.handoff_recommended ? "Yes" : "No"}`,
+      ].join("\n");
+
+      questionModal.classList.add("open");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeQuestionDetails() {
+      questionModal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+    }
+
+    async function loadQuestions({ append = false } = {}) {
+      const days = daysSelect.value;
+
+      if (!append) {
+        questionRows = [];
+        questionsOffset = 0;
+        questionsTotal = 0;
+        $("allQuestions").innerHTML = `<tr><td colspan="7" class="empty">Loading questions...</td></tr>`;
+      }
+
+      viewMoreQuestionsBtn.disabled = true;
+
+      try {
+        const data = await fetchJson(
+          `/analytics/questions?days=${encodeURIComponent(days)}&limit=${questionsLimit}&offset=${questionsOffset}`
+        );
+
+        questionsTotal = number(data.total);
+        questionRows = [...questionRows, ...(data.questions || [])];
+
+        renderAllQuestions();
+
+        questionsOffset = questionRows.length;
+      } catch (error) {
+        $("allQuestions").innerHTML = `
+          <tr>
+            <td colspan="7" class="empty">
+              Could not load all questions. Make sure the /analytics/questions backend route is deployed.
+            </td>
+          </tr>
+        `;
+        $("questionsCountText").textContent = error.message;
+        viewMoreQuestionsBtn.style.display = "none";
+      } finally {
+        viewMoreQuestionsBtn.disabled = false;
+      }
+    }
+
     async function loadDashboard() {
       const key = getAdminKey();
 
       if (!key) {
-        showNotice("<strong>Admin key needed:</strong> paste your ADMIN_KEY and click Save Key.");
+        openKeyModal();
         return;
       }
 
@@ -1105,52 +1568,72 @@
 
       try {
         const days = daysSelect.value;
-
-        const response = await fetch(`${WORKER_URL}/analytics/summary?days=${encodeURIComponent(days)}`, {
-          method: "GET",
-          headers: {
-            "x-admin-key": key,
-          },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.ok) {
-          throw new Error(data.error || "Could not load analytics.");
-        }
+        const data = await fetchJson(`/analytics/summary?days=${encodeURIComponent(days)}`);
 
         renderDashboard(data);
+        await loadQuestions({ append: false });
 
         const generated = new Date(data.generated_at);
         statusText.textContent = `Updated ${generated.toLocaleString()} · ${data.period_days} days`;
 
         if (number(data.overview?.sessions_30d) < 10) {
           showNotice(
-            "<strong>Note:</strong> This dashboard is working, but current numbers are mostly test data. Percentages will become more meaningful after more real website traffic."
+            "<strong>Note:</strong> This dashboard is working, but current numbers may still include test data. Percentages become more useful after real traffic grows."
           );
         }
       } catch (error) {
         showNotice(`<strong>Error:</strong> ${escapeHtml(error.message)}. Check your ADMIN_KEY and Worker URL.`);
         statusText.textContent = "Failed to load";
+
+        if (String(error.message || "").toLowerCase().includes("unauthorized")) {
+          clearAdminKey();
+        }
       } finally {
         refreshBtn.disabled = false;
       }
     }
 
-    saveKeyBtn.addEventListener("click", () => {
-      saveAdminKey();
-      loadDashboard();
+    modalLoginBtn.addEventListener("click", saveAdminKeyFromModal);
+
+    modalAdminKeyInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        saveAdminKeyFromModal();
+      }
     });
 
     refreshBtn.addEventListener("click", loadDashboard);
+
     daysSelect.addEventListener("change", loadDashboard);
 
-    const savedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
-    if (savedKey) {
-      adminKeyInput.value = savedKey;
+    changeKeyBtn.addEventListener("click", openKeyModal);
+
+    forgetKeyBtn.addEventListener("click", clearAdminKey);
+
+    viewMoreQuestionsBtn.addEventListener("click", () => {
+      loadQuestions({ append: true });
+    });
+
+    closeQuestionModalBtn.addEventListener("click", closeQuestionDetails);
+
+    questionModal.addEventListener("click", (event) => {
+      if (event.target === questionModal) {
+        closeQuestionDetails();
+      }
+    });
+
+    keyModal.addEventListener("click", (event) => {
+      if (event.target === keyModal && getAdminKey()) {
+        closeKeyModal();
+      }
+    });
+
+    const existingKey = getAdminKey();
+
+    if (existingKey) {
+      closeKeyModal();
       loadDashboard();
     } else {
-      showNotice("<strong>Welcome:</strong> paste your ADMIN_KEY to load the private analytics dashboard.");
+      openKeyModal();
     }
   </script>
 </body>

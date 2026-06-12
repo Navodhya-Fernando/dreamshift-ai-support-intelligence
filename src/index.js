@@ -1165,6 +1165,24 @@ function clampDays(value) {
   return parsed;
 }
 
+function clampLimit(value, fallback = 25, max = 100) {
+  const parsed = Number.parseInt(value || `${fallback}`, 10);
+
+  if (Number.isNaN(parsed)) return fallback;
+  if (parsed < 1) return 1;
+  if (parsed > max) return max;
+
+  return parsed;
+}
+
+function clampOffset(value) {
+  const parsed = Number.parseInt(value || "0", 10);
+
+  if (Number.isNaN(parsed) || parsed < 0) return 0;
+
+  return parsed;
+}
+
 async function dbAll(db, sql, ...params) {
   const result = await db.prepare(sql).bind(...params).all();
   return result?.results || [];
@@ -1282,6 +1300,10 @@ export default {
 
       if (url.pathname === "/analytics/summary" && request.method === "GET") {
         return await analyticsSummaryRoute(request, env);
+      }
+
+      if (url.pathname === "/analytics/questions" && request.method === "GET") {
+        return await analyticsQuestionsRoute(request, env);
       }
 
       if (request.method === "GET") {
@@ -1666,7 +1688,6 @@ async function eventRoute(request, env) {
 
 async function analyticsSummaryRoute(request, env) {
   const auth = requireAdmin(request, env);
-
   if (!auth.ok) return auth.response;
 
   const db = getDb(env);
@@ -1848,7 +1869,7 @@ async function analyticsSummaryRoute(request, env) {
           FROM chat_messages m
           WHERE m.session_id = s.session_id
             AND m.role = 'user'
-          ORDER BY m.created_at DESC
+          ORDER BY m.rowid DESC
           LIMIT 1
         ) AS last_user_message
       FROM chat_sessions s
@@ -1907,5 +1928,93 @@ async function analyticsSummaryRoute(request, env) {
   } catch (e) {
     console.error("ANALYTICS_SUMMARY_ERROR", e);
     return err("Could not build analytics summary", 500);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// /analytics/questions
+// ---------------------------------------------------------------------------
+
+async function analyticsQuestionsRoute(request, env) {
+  const auth = requireAdmin(request, env);
+  if (!auth.ok) return auth.response;
+
+  const db = getDb(env);
+
+  if (!db) {
+    return err("D1 database binding not found", 500);
+  }
+
+  const url = new URL(request.url);
+  const days = clampDays(url.searchParams.get("days"));
+  const limit = clampLimit(url.searchParams.get("limit"), 25, 100);
+  const offset = clampOffset(url.searchParams.get("offset"));
+  const since = `-${days} days`;
+
+  try {
+    const totalRow = await dbFirst(
+      db,
+      `
+      SELECT COUNT(*) AS total
+      FROM chat_messages
+      WHERE role = 'user'
+        AND created_at >= datetime('now', ?)
+      `,
+      since
+    );
+
+    const questions = await dbAll(
+      db,
+      `
+      SELECT
+        m.message_id,
+        m.session_id,
+        m.content AS question,
+        m.intent,
+        m.answer_mode,
+        m.lead_temperature,
+        m.package_interest,
+        m.objection,
+        m.handoff_recommended,
+        m.created_at,
+        s.visitor_id,
+        s.page_url,
+        s.utm_source,
+        s.utm_medium,
+        s.utm_campaign,
+        (
+          SELECT a.content
+          FROM chat_messages a
+          WHERE a.session_id = m.session_id
+            AND a.role = 'assistant'
+            AND a.rowid > m.rowid
+          ORDER BY a.rowid ASC
+          LIMIT 1
+        ) AS answer
+      FROM chat_messages m
+      LEFT JOIN chat_sessions s
+        ON s.session_id = m.session_id
+      WHERE m.role = 'user'
+        AND m.created_at >= datetime('now', ?)
+      ORDER BY m.rowid DESC
+      LIMIT ? OFFSET ?
+      `,
+      since,
+      limit,
+      offset
+    );
+
+    return ok({
+      ok: true,
+      generated_at: new Date().toISOString(),
+      period_days: days,
+      total: num(totalRow.total),
+      limit,
+      offset,
+      questions,
+    });
+  } catch (e) {
+    console.error("ANALYTICS_QUESTIONS_ERROR", e);
+    return err("Could not load questions", 500);
   }
 }
