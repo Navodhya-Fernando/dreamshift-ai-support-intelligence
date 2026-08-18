@@ -25,13 +25,13 @@ Individual services are available, but the chatbot should first explain that mos
 Individual service pricing:
 - Resume/CV Writing: AUD 400 onwards
 - Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- LinkedIn Optimization: AUD 450 onwards
 
 ## Safe Chatbot Wording
 Most clients choose one of our packages because they include the full job-search toolkit. But if you only need one service, individual options are available too:
 - Resume/CV Writing: AUD 400 onwards
 - Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- LinkedIn Optimization: AUD 450 onwards
 
 Would you like to compare the packages first, or explore individual services?
 

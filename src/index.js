@@ -31,7 +31,7 @@ const err = (message, status = 400) =>
 const PACKAGE_FACTS = {
   essential: {
     name: "Essential Package",
-    price: "AUD 750",
+    price: "AUD 950",
     ideal: "best if you have one specific job opening to apply for",
     includes: [
       "Resume/CV Writing: 1 version",
@@ -45,7 +45,7 @@ const PACKAGE_FACTS = {
   },
   advanced: {
     name: "Advanced Package",
-    price: "AUD 800",
+    price: "AUD 1000",
     ideal: "best if you want experts to handle every document and guide you through the job search",
     includes: [
       "Resume/CV Writing: 3–4 versions",
@@ -62,7 +62,7 @@ const PACKAGE_FACTS = {
   },
   ultimate: {
     name: "Ultimate Career Package",
-    price: "AUD 1500",
+    price: "AUD 1700",
     ideal: "best if you want DreamShift to apply for jobs and handle everything for you",
     includes: [
       "Resume/CV Writing: 3–4 versions",
@@ -84,7 +84,7 @@ const PACKAGE_FACTS = {
 const INDIVIDUAL_SERVICES = [
   "Resume/CV Writing: AUD 400 onwards",
   "Cover Letter Writing: AUD 150 onwards",
-  "LinkedIn Optimization: AUD 350 onwards",
+  "LinkedIn Optimization: AUD 450 onwards",
 ];
 
 // ---------------------------------------------------------------------------
@@ -721,8 +721,8 @@ function keywordBoost(match, intent, originalMessage) {
   if ((match?.metadata?.category || "") === "critical_facts") boost += 0.2;
 
   const keywordsByIntent = {
-    packages_overview: ["essential", "advanced", "ultimate", "aud 750", "aud 800", "aud 1500"],
-    pricing_general: ["price", "pricing", "aud 750", "aud 800", "aud 1500"],
+    packages_overview: ["essential", "advanced", "ultimate", "aud 950", "aud 1000", "aud 1700"],
+    pricing_general: ["price", "pricing", "aud 950", "aud 1000", "aud 1700"],
     job_application_support: ["job application support", "ultimate", "2 months", "dedicated senior writer"],
     urgent_delivery: ["urgent", "availability", "deadline", "free consultation"],
     interview_guarantee: ["60", "interview", "50% refund", "rewrite", "75 days"],
@@ -731,7 +731,7 @@ function keywordBoost(match, intent, originalMessage) {
     not_in_australia: ["not currently in australia", "targeting australia", "migration advice", "visa advice"],
     no_australian_experience: ["australian experience", "transferable skills", "achievements"],
     missed_call_reschedule: ["reschedule", "missed", "consultation"],
-    individual_services: ["aud 400", "aud 150", "aud 350", "individual services"],
+    individual_services: ["aud 400", "aud 150", "aud 450", "individual services"],
     revisions: ["revisions", "1 week", "1 month"],
     process: ["whatsapp group", "job market research", "ats keyword", "questionnaire", "linkedin"],
     industry_support: ["40+ industries", "banking", "finance", "it", "manufacturing"],

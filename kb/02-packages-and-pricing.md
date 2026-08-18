@@ -7,7 +7,7 @@ All package prices are in AUD.
 Clients do not have to pay everything at once. Instalment options are available with an additional AUD 10 charge. The exact payment arrangement can be discussed during the free consultation call, and the client can decide after the call whether they want to proceed.
 
 ## Essential Package
-Price: AUD 750
+Price: AUD 950
 
 Payment note: You do not have to pay at once.
 
@@ -34,7 +34,7 @@ Recommend Essential when the user:
 - Is more budget-conscious but still wants a full professional package.
 
 ## Advanced Package
-Price: AUD 800
+Price: AUD 1000
 
 Payment note: You do not have to pay at once.
 
@@ -65,7 +65,7 @@ Recommend Advanced when the user:
 - Wants stronger support than Essential.
 
 ## Ultimate Career Package
-Price: AUD 1500
+Price: AUD 1700
 
 Payment note: You do not have to pay at once.
 

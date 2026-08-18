@@ -5,7 +5,7 @@
 DreamShift has three main packages.
 
 Essential Package:
-- Price: AUD 750
+- Price: AUD 950
 - Ideal for someone with one specific job opening
 - Includes Resume/CV Writing: 1 version
 - Includes Cover Letter Writing: 1 version
@@ -16,7 +16,7 @@ Essential Package:
 - Revisions: unlimited within 1 week
 
 Advanced Package:
-- Price: AUD 800
+- Price: AUD 1000
 - Ideal for someone who wants experts to handle every document and guide them
 - Includes Resume/CV Writing: 3–4 versions
 - Includes Cover Letter Writing: 3–4 versions
@@ -31,7 +31,7 @@ Advanced Package:
 - Does not include the same 2-month job application support as Ultimate
 
 Ultimate Career Package:
-- Price: AUD 1500
+- Price: AUD 1700
 - Ideal for someone who wants DreamShift to apply for jobs and handle everything
 - Includes Resume/CV Writing: 3–4 versions
 - Includes Cover Letter Writing: 3–4 versions
@@ -53,7 +53,7 @@ Individual services are available, but the chatbot should recommend packages fir
 Individual service prices:
 - Resume/CV Writing: AUD 400 onwards
 - Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- LinkedIn Optimization: AUD 450 onwards
 
 ## Instalments
 

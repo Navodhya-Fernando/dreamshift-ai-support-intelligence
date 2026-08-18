@@ -1,0 +1,1107 @@
+(function () {
+  "use strict";
+
+  // Avoid duplicate initialization if WordPress/Elementor loads this file twice.
+  if (window.DREAMSHIFT_AI_LOADED) return;
+  window.DREAMSHIFT_AI_LOADED = true;
+
+  // Do not render the public chatbot inside Elementor edit mode.
+  if (
+    window.elementorFrontend &&
+    window.elementorFrontend.isEditMode &&
+    window.elementorFrontend.isEditMode()
+  ) {
+    return;
+  }
+
+  function injectChat() {
+    if (!document.body || document.getElementById("dreamshift-chat-root")) return;
+
+    // If this script is still mounted through an Elementor popup shell,
+    // make the shell invisible so only the DreamShift widget is shown.
+    const mount = document.getElementById("ds-chat-mount");
+    if (mount) {
+      const modal = mount.closest(".elementor-popup-modal");
+      if (modal) {
+        const msg = modal.querySelector(".dialog-message");
+        const content = modal.querySelector(".dialog-widget-content");
+        const closeButton = modal.querySelector(".dialog-close-button");
+
+        if (msg) {
+          msg.style.background = "transparent";
+          msg.style.boxShadow = "none";
+          msg.style.padding = "0";
+        }
+
+        if (content) {
+          content.style.background = "transparent";
+          content.style.boxShadow = "none";
+          content.style.padding = "0";
+        }
+
+        if (closeButton) closeButton.style.display = "none";
+      }
+    }
+
+    // Styles ported from frontend/popup.html, scoped for safe website injection.
+    const style = document.createElement("style");
+    style.id = "dreamshift-chat-styles";
+    style.textContent = `
+#dreamshift-chat-root {
+      --ds-dark: #24101a;
+      --ds-plum: #411c30;
+      --ds-gold: #f6b900;
+      --ds-yellow: #ffe500;
+      --ds-white: #ffffff;
+
+      --ds-bg: #ffffff;
+      --ds-soft: rgba(65, 28, 48, 0.045);
+      --ds-soft-2: rgba(246, 185, 0, 0.11);
+      --ds-border: rgba(65, 28, 48, 0.14);
+      --ds-text: #24101a;
+      --ds-muted: rgba(36, 16, 26, 0.62);
+      --ds-muted-2: rgba(36, 16, 26, 0.42);
+
+      --ds-shadow: 0 26px 70px rgba(36, 16, 26, 0.34);
+      --ds-shadow-soft: 0 12px 34px rgba(36, 16, 26, 0.15);
+
+      --ds-radius-xl: 26px;
+      --ds-radius-lg: 20px;
+      --ds-radius-md: 14px;
+      --ds-radius-sm: 10px;
+    }
+
+    #dreamshift-chat-root,
+    #dreamshift-chat-root * {
+      box-sizing: border-box;
+    }
+
+    #dreamshift-chat-root {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    #dreamshift-chat-root {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 999999;
+      color: var(--ds-text);
+    }
+
+    .ds-chat-launcher-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ds-launcher-label {
+      background: rgba(36, 16, 26, 0.96);
+      color: var(--ds-white);
+      padding: 10px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 650;
+      box-shadow: 0 14px 35px rgba(36, 16, 26, 0.26);
+      border: 1px solid rgba(255, 229, 0, 0.18);
+      white-space: nowrap;
+      animation: dsFadeIn 0.35s ease;
+    }
+
+    .ds-chat-launcher {
+      width: 66px;
+      height: 66px;
+      border-radius: 999px;
+      border: none;
+      background:
+        radial-gradient(circle at 28% 18%, rgba(255, 229, 0, 0.88), transparent 24%),
+        linear-gradient(135deg, #24101a 0%, #411c30 54%, #f6b900 130%);
+      color: var(--ds-white);
+      cursor: pointer;
+      box-shadow: var(--ds-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      position: relative;
+    }
+
+    .ds-chat-launcher::after {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 999px;
+      border: 1px solid rgba(246, 185, 0, 0.42);
+      animation: dsRing 2.2s ease-out infinite;
+    }
+
+    .ds-chat-launcher:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 30px 80px rgba(36, 16, 26, 0.42);
+    }
+
+    .ds-chat-launcher svg {
+      width: 31px;
+      height: 31px;
+      z-index: 1;
+    }
+
+    @keyframes dsRing {
+      0% {
+        opacity: 0.55;
+        transform: scale(0.96);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes dsFadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .ds-chat-panel {
+      width: 420px;
+      max-width: calc(100vw - 28px);
+      height: 680px;
+      max-height: calc(100vh - 108px);
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid rgba(65, 28, 48, 0.14);
+      border-radius: var(--ds-radius-xl);
+      box-shadow: var(--ds-shadow);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      margin-bottom: 16px;
+      backdrop-filter: blur(16px);
+    }
+
+    .ds-chat-panel.ds-open {
+      display: flex;
+      animation: dsSlideUp 0.24s ease;
+    }
+
+    @keyframes dsSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .ds-chat-header {
+      background:
+        radial-gradient(circle at top left, rgba(255, 229, 0, 0.28), transparent 32%),
+        radial-gradient(circle at 88% 12%, rgba(246, 185, 0, 0.26), transparent 30%),
+        linear-gradient(135deg, #24101a 0%, #411c30 100%);
+      color: var(--ds-white);
+      padding: 18px 18px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ds-chat-header::after {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -90px;
+      top: -86px;
+      border-radius: 999px;
+      background: rgba(246, 185, 0, 0.19);
+      filter: blur(4px);
+    }
+
+    .ds-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ds-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ds-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 229, 0, 0.24), rgba(255, 255, 255, 0.08));
+      border: 1px solid rgba(255, 229, 0, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--ds-white);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .ds-title {
+      margin: 0;
+      font-size: 16.5px;
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .ds-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 5px;
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .ds-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--ds-yellow);
+      box-shadow: 0 0 0 4px rgba(255, 229, 0, 0.18);
+    }
+
+    .ds-header-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .ds-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--ds-white);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.16s ease;
+    }
+
+    .ds-icon-btn:hover {
+      background: rgba(255, 229, 0, 0.18);
+    }
+
+    .ds-trust-strip {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .ds-trust-card {
+      border: 1px solid rgba(255, 229, 0, 0.18);
+      background: rgba(255, 255, 255, 0.075);
+      border-radius: 13px;
+      padding: 9px 8px;
+      backdrop-filter: blur(10px);
+    }
+
+    .ds-trust-value {
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.1;
+      color: var(--ds-yellow);
+    }
+
+    .ds-trust-label {
+      margin-top: 3px;
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 1.2;
+    }
+
+    .ds-chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(246, 185, 0, 0.10), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, rgba(65, 28, 48, 0.035) 100%);
+      scroll-behavior: smooth;
+    }
+
+    .ds-chat-body::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    .ds-chat-body::-webkit-scrollbar-thumb {
+      background: rgba(65, 28, 48, 0.22);
+      border-radius: 999px;
+    }
+
+    .ds-welcome-card {
+      background: var(--ds-white);
+      border: 1px solid rgba(65, 28, 48, 0.12);
+      box-shadow: 0 10px 30px rgba(36, 16, 26, 0.08);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .ds-welcome-eyebrow {
+      font-size: 11.5px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ds-plum);
+      margin-bottom: 6px;
+    }
+
+    .ds-welcome-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      color: var(--ds-dark);
+    }
+
+    .ds-welcome-text {
+      margin: 7px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(36, 16, 26, 0.72);
+    }
+
+    .ds-message-row {
+      display: flex;
+      margin-bottom: 13px;
+    }
+
+    .ds-message-row.ds-user {
+      justify-content: flex-end;
+    }
+
+    .ds-message-row.ds-bot {
+      justify-content: flex-start;
+    }
+
+    .ds-message {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 17px;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .ds-message strong {
+      font-weight: 850;
+    }
+
+    .ds-user .ds-message {
+      background: linear-gradient(135deg, #411c30, #24101a);
+      color: var(--ds-white);
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 10px 22px rgba(36, 16, 26, 0.22);
+    }
+
+    .ds-bot .ds-message {
+      background: var(--ds-white);
+      border: 1px solid rgba(65, 28, 48, 0.12);
+      color: var(--ds-text);
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 8px 20px rgba(36, 16, 26, 0.055);
+    }
+
+    .ds-loading {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      padding: 2px 0;
+    }
+
+    .ds-loading span {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ds-gold);
+      animation: dsPulse 1s infinite ease-in-out;
+    }
+
+    .ds-loading span:nth-child(2) {
+      animation-delay: 0.14s;
+    }
+
+    .ds-loading span:nth-child(3) {
+      animation-delay: 0.28s;
+    }
+
+    @keyframes dsPulse {
+      0%, 80%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+      }
+      40% {
+        opacity: 1;
+        transform: translateY(-3px);
+      }
+    }
+
+    .ds-actions-section {
+      background: var(--ds-white);
+      border-top: 1px solid var(--ds-border);
+    }
+
+    .ds-quick-title {
+      padding: 12px 16px 0;
+      font-size: 11.5px;
+      color: var(--ds-muted);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ds-quick-actions {
+      padding: 9px 16px 8px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .ds-quick-actions::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ds-chip {
+      flex: 0 0 auto;
+      border: 1px solid rgba(65, 28, 48, 0.14);
+      background: var(--ds-white);
+      color: var(--ds-plum);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 12.5px;
+      font-weight: 650;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.16s ease;
+    }
+
+    .ds-chip:hover {
+      border-color: rgba(246, 185, 0, 0.75);
+      background: rgba(255, 229, 0, 0.14);
+      color: var(--ds-dark);
+      transform: translateY(-1px);
+    }
+
+    .ds-cta-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      padding: 9px 16px 13px;
+      background: var(--ds-white);
+    }
+
+    .ds-cta {
+      text-decoration: none;
+      text-align: center;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 11px 10px;
+      border: 1px solid rgba(65, 28, 48, 0.16);
+      color: var(--ds-dark);
+      background: var(--ds-white);
+      transition: all 0.16s ease;
+    }
+
+    .ds-cta:hover {
+      background: rgba(246, 185, 0, 0.1);
+      border-color: rgba(246, 185, 0, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .ds-cta-primary {
+      background: linear-gradient(135deg, #f6b900, #ffe500);
+      border-color: #f6b900;
+      color: #24101a;
+      box-shadow: 0 10px 22px rgba(246, 185, 0, 0.23);
+    }
+
+    .ds-cta-primary:hover {
+      background: linear-gradient(135deg, #ffe500, #f6b900);
+    }
+
+    .ds-input-area {
+      padding: 12px 14px 10px;
+      border-top: 1px solid var(--ds-border);
+      background: var(--ds-white);
+      display: flex;
+      gap: 9px;
+      align-items: flex-end;
+    }
+
+    .ds-input {
+      flex: 1;
+      min-height: 46px;
+      max-height: 112px;
+      resize: none;
+      border: 1px solid rgba(65, 28, 48, 0.16);
+      border-radius: 15px;
+      padding: 12px 13px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      line-height: 1.35;
+      color: var(--ds-text);
+      background: var(--ds-white);
+      transition: border 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .ds-input::placeholder {
+      color: rgba(36, 16, 26, 0.42);
+    }
+
+    .ds-input:focus {
+      border-color: rgba(246, 185, 0, 0.9);
+      box-shadow: 0 0 0 4px rgba(246, 185, 0, 0.14);
+    }
+
+    .ds-send {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      border: none;
+      background: linear-gradient(135deg, #411c30, #24101a);
+      color: var(--ds-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.16s ease, background 0.16s ease;
+      flex: 0 0 auto;
+      box-shadow: 0 10px 22px rgba(36, 16, 26, 0.22);
+    }
+
+    .ds-send:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, #24101a, #411c30);
+    }
+
+    .ds-send:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ds-send svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .ds-footer-note {
+      padding: 0 16px 13px;
+      font-size: 11.5px;
+      color: var(--ds-muted);
+      text-align: center;
+      background: var(--ds-white);
+    }
+
+    .ds-footer-note strong {
+      color: var(--ds-dark);
+      font-weight: 850;
+    }
+
+    @media (max-width: 520px) {
+      #dreamshift-chat-root {
+        right: 14px;
+        bottom: 14px;
+      }
+
+      .ds-launcher-label {
+        display: none;
+      }
+
+      .ds-chat-panel {
+        width: calc(100vw - 28px);
+        height: calc(100vh - 86px);
+        max-height: calc(100vh - 86px);
+        border-radius: 22px;
+      }
+
+      .ds-chat-launcher {
+        width: 60px;
+        height: 60px;
+      }
+
+      .ds-trust-strip {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .ds-trust-card {
+        padding: 8px 7px;
+      }
+
+      .ds-trust-value {
+        font-size: 12px;
+      }
+
+      .ds-trust-label {
+        font-size: 10px;
+      }
+
+      .ds-message {
+        max-width: 91%;
+      }
+    }
+    `;
+    document.head.appendChild(style);
+
+    // UI ported from frontend/popup.html.
+    const template = document.createElement("template");
+    template.innerHTML = `
+<div id="dreamshift-chat-root">
+    <div class="ds-chat-panel" id="dsChatPanel" aria-label="DreamShift AI Chatbot">
+      <div class="ds-chat-header">
+        <div class="ds-header-top">
+          <div class="ds-brand">
+            <div class="ds-avatar">DS</div>
+            <div>
+              <p class="ds-title">DreamShift AI</p>
+              <div class="ds-subtitle">
+                <span class="ds-dot"></span>
+                Premium Australia job-search support
+              </div>
+            </div>
+          </div>
+
+          <div class="ds-header-actions">
+            <button class="ds-icon-btn" id="dsCloseBtn" aria-label="Close chat">×</button>
+          </div>
+        </div>
+
+        <div class="ds-trust-strip">
+          <div class="ds-trust-card">
+            <div class="ds-trust-value">100+</div>
+            <div class="ds-trust-label">clients supported</div>
+          </div>
+          <div class="ds-trust-card">
+            <div class="ds-trust-value">91%</div>
+            <div class="ds-trust-label">landed interviews</div>
+          </div>
+          <div class="ds-trust-card">
+            <div class="ds-trust-value">40+</div>
+            <div class="ds-trust-label">industries</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-chat-body" id="dsChatBody"></div>
+
+      <div class="ds-actions-section">
+        <div class="ds-quick-title">Popular questions</div>
+
+        <div class="ds-quick-actions">
+          <button class="ds-chip" data-message="What packages do you offer?">Packages</button>
+          <button class="ds-chip" data-message="Can you apply for jobs for me?">Job applications</button>
+          <button class="ds-chip" data-message="Can I pay in installments?">Instalments</button>
+          <button class="ds-chip" data-message="Do you guarantee a job?">Guarantee</button>
+          <button class="ds-chip" data-message="How does your process work?">Process</button>
+        </div>
+
+        <div class="ds-cta-bar">
+          <a
+            id="dsWhatsappCta"
+            class="ds-cta ds-cta-primary"
+            href="https://wa.me/61489981622"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+          </a>
+
+          <a
+            id="dsBookingCta"
+            class="ds-cta"
+            href="https://start.dreamshift.net"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Book / Contact
+          </a>
+        </div>
+      </div>
+
+      <div class="ds-input-area">
+        <textarea
+          id="dsChatInput"
+          class="ds-input"
+          rows="1"
+          placeholder="Ask about packages, pricing, job applications..."
+        ></textarea>
+
+        <button class="ds-send" id="dsSendBtn" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M5 12L3 5L21 12L3 19L5 12ZM5 12H13"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="ds-footer-note">
+        Need urgent help? WhatsApp <strong>+61 489 981 622</strong>
+      </div>
+    </div>
+
+    <div class="ds-chat-launcher-wrap" id="dsLauncherWrap">
+      <div class="ds-launcher-label">Ask DreamShift AI</div>
+
+      <button class="ds-chat-launcher" id="dsLauncher" aria-label="Open DreamShift AI chat">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M7.5 18.5L4 21V6.5C4 4.57 5.57 3 7.5 3H16.5C18.43 3 20 4.57 20 6.5V15C20 16.93 18.43 18.5 16.5 18.5H7.5Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          <path d="M8 8H16M8 12H13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+    `;
+    document.body.appendChild(template.content.cloneNode(true));
+
+    // Behaviour + analytics ported from frontend/popup.html.
+    const WORKER_URL = "https://dreamshift-bot.dreamshift-kb.workers.dev";
+        const START_LINK = "https://start.dreamshift.net";
+        const WHATSAPP_NUMBER = "61489981622";
+
+        const DS_SESSION_KEY = "dreamshift_chat_session_id";
+        const DS_VISITOR_KEY = "dreamshift_visitor_id";
+
+        const panel = document.getElementById("dsChatPanel");
+        const launcher = document.getElementById("dsLauncher");
+        const launcherWrap = document.getElementById("dsLauncherWrap");
+        const closeBtn = document.getElementById("dsCloseBtn");
+        const chatBody = document.getElementById("dsChatBody");
+        const input = document.getElementById("dsChatInput");
+        const sendBtn = document.getElementById("dsSendBtn");
+        const chips = document.querySelectorAll(".ds-chip");
+
+        const whatsappCta = document.getElementById("dsWhatsappCta");
+        const bookingCta = document.getElementById("dsBookingCta");
+
+        let isSending = false;
+
+        function makeClientId(prefix) {
+          if (window.crypto && crypto.randomUUID) {
+            return `${prefix}_${crypto.randomUUID().replace(/-/g, "")}`;
+          }
+
+          return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+        }
+
+        function getOrCreateStorageValue(key, prefix) {
+          let value = localStorage.getItem(key);
+
+          if (!value) {
+            value = makeClientId(prefix);
+            localStorage.setItem(key, value);
+          }
+
+          return value;
+        }
+
+        function getSafePageUrl() {
+          try {
+            return window.location.href;
+          } catch {
+            return null;
+          }
+        }
+
+        function getUtmParams() {
+          const params = new URLSearchParams(window.location.search);
+
+          return {
+            utm_source: params.get("utm_source"),
+            utm_medium: params.get("utm_medium"),
+            utm_campaign: params.get("utm_campaign"),
+            utm_content: params.get("utm_content"),
+            utm_term: params.get("utm_term"),
+          };
+        }
+
+        function buildTrackingPayload(extra = {}) {
+          const utms = getUtmParams();
+
+          return {
+            session_id: getOrCreateStorageValue(DS_SESSION_KEY, "sess"),
+            visitor_id: getOrCreateStorageValue(DS_VISITOR_KEY, "visitor"),
+            page_url: getSafePageUrl(),
+            referrer: document.referrer || null,
+            user_agent: navigator.userAgent,
+            ...utms,
+            ...extra,
+          };
+        }
+
+        async function trackEvent(eventName, extra = {}) {
+          try {
+            const response = await fetch(`${WORKER_URL}/event`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(
+                buildTrackingPayload({
+                  event_name: eventName,
+                  ...extra,
+                })
+              ),
+            });
+
+            if (!response.ok) {
+              console.warn(
+                "DreamShift analytics HTTP error",
+                eventName,
+                response.status,
+                response.statusText
+              );
+            }
+          } catch (error) {
+            // Do not interrupt the user experience if analytics fails.
+            console.warn("DreamShift analytics event failed", eventName, error);
+          }
+        }
+
+        function buildChatPayload(message) {
+          return buildTrackingPayload({ message });
+        }
+
+        function escapeHtml(value) {
+          return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        function formatMessage(text) {
+          const escaped = escapeHtml(text || "");
+          return escaped.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        }
+
+        function scrollToBottom() {
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function appendWelcomeCard() {
+          const card = document.createElement("div");
+          card.className = "ds-welcome-card";
+          card.innerHTML = `
+            <div class="ds-welcome-eyebrow">Career support for Australia</div>
+            <p class="ds-welcome-title">Hi, I’m DreamShift AI.</p>
+            <p class="ds-welcome-text">
+              I can help you compare packages, understand pricing, ask about job application support,
+              instalments, and the 60-day interview guarantee.
+            </p>
+          `;
+
+          chatBody.appendChild(card);
+          scrollToBottom();
+        }
+
+        function appendMessage(role, text, options = {}) {
+          const row = document.createElement("div");
+          row.className = `ds-message-row ${role === "user" ? "ds-user" : "ds-bot"}`;
+
+          const bubble = document.createElement("div");
+          bubble.className = "ds-message";
+
+          if (options.loading) {
+            bubble.innerHTML = `
+              <span class="ds-loading">
+                <span></span><span></span><span></span>
+              </span>
+            `;
+          } else {
+            bubble.innerHTML = formatMessage(text);
+          }
+
+          row.appendChild(bubble);
+          chatBody.appendChild(row);
+          scrollToBottom();
+
+          return row;
+        }
+
+        function removeMessage(row) {
+          if (row && row.parentNode) {
+            row.parentNode.removeChild(row);
+          }
+        }
+
+        function openChat() {
+          panel.classList.add("ds-open");
+          launcherWrap.style.display = "none";
+          addInitialMessage();
+          trackEvent("chat_opened");
+          setTimeout(() => input.focus(), 90);
+        }
+
+        function closeChat() {
+          panel.classList.remove("ds-open");
+          launcherWrap.style.display = "flex";
+        }
+
+        function autoResizeInput() {
+          input.style.height = "auto";
+          input.style.height = Math.min(input.scrollHeight, 112) + "px";
+        }
+
+        async function sendMessage(messageFromChip) {
+          const message = (messageFromChip || input.value || "").trim();
+
+          if (!message || isSending) return;
+
+          isSending = true;
+          sendBtn.disabled = true;
+
+          appendMessage("user", message);
+          input.value = "";
+          autoResizeInput();
+
+          const loadingRow = appendMessage("bot", "", { loading: true });
+
+          try {
+            const response = await fetch(`${WORKER_URL}/chat`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(buildChatPayload(message)),
+            });
+
+            const data = await response.json();
+
+            if (data && data.session_id) {
+              localStorage.setItem(DS_SESSION_KEY, data.session_id);
+            }
+
+            removeMessage(loadingRow);
+
+            if (!response.ok) {
+              appendMessage(
+                "bot",
+                "Sorry, something went wrong. Please contact DreamShift on WhatsApp at +61 489 981 622."
+              );
+              return;
+            }
+
+            appendMessage(
+              "bot",
+              data.reply || "I’m not aware of that at the moment. Please contact us via WhatsApp for direct support."
+            );
+          } catch (error) {
+            removeMessage(loadingRow);
+            appendMessage(
+              "bot",
+              "Sorry, I couldn’t connect right now. Please WhatsApp DreamShift at +61 489 981 622 or use start.dreamshift.net."
+            );
+          } finally {
+            isSending = false;
+            sendBtn.disabled = false;
+            input.focus();
+          }
+        }
+
+        function addInitialMessage() {
+          if (chatBody.children.length > 0) return;
+
+          appendWelcomeCard();
+          appendMessage(
+            "bot",
+            "What would you like to know first — packages, pricing, job application support, or the process?"
+          );
+        }
+
+        launcher.addEventListener("click", openChat);
+        closeBtn.addEventListener("click", closeChat);
+        sendBtn.addEventListener("click", () => sendMessage());
+        input.addEventListener("input", autoResizeInput);
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+          }
+        });
+
+        whatsappCta.addEventListener("click", () => {
+          trackEvent("whatsapp_clicked", {
+            label: "WhatsApp CTA",
+            value: "+61 489 981 622",
+          });
+        });
+
+        bookingCta.addEventListener("click", () => {
+          trackEvent("booking_clicked", {
+            label: "Book / Contact CTA",
+            value: "https://start.dreamshift.net",
+          });
+        });
+
+        chips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const message = chip.getAttribute("data-message");
+
+            trackEvent("quick_action_clicked", {
+              label: chip.textContent.trim(),
+              value: message,
+            });
+
+            sendMessage(message);
+          });
+        });
+
+        window.DreamShiftChat = {
+          open: openChat,
+          close: closeChat,
+          send: sendMessage,
+          whatsapp: () => {
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}`, "_blank", "noopener,noreferrer");
+          },
+          start: () => {
+            window.open(START_LINK, "_blank", "noopener,noreferrer");
+          },
+        };
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", injectChat, { once: true });
+  } else {
+    injectChat();
+  }
+})();
