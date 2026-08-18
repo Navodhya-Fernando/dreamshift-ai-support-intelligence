@@ -1,5 +1,5 @@
 const EMBED_MODEL = "@cf/baai/bge-small-en-v1.5";
-const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const BOT_NAME = "DreamShift AI";
 const KB_VERSION = "dreamshift-australia-v1.1";
 

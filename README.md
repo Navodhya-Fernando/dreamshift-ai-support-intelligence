@@ -144,7 +144,7 @@ flowchart TD
 ### AI and Data Layer
 
 * Embedding model: `@cf/baai/bge-small-en-v1.5`
-* Chat model: `@cf/meta/llama-3.1-8b-instruct`
+* Chat model: `@cf/meta/llama-3.1-8b-instruct-fast`
 * Vector database: Cloudflare Vectorize
 * Relational analytics database: Cloudflare D1 / SQLite
 
