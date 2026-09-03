@@ -31,7 +31,7 @@ const err = (message, status = 400) =>
 const PACKAGE_FACTS = {
   essential: {
     name: "Essential Package",
-    price: "AUD 950",
+    price: "AUD 1050",
     ideal: "best if you have one specific job opening to apply for",
     includes: [
       "Resume/CV Writing: 1 version",
@@ -45,7 +45,7 @@ const PACKAGE_FACTS = {
   },
   advanced: {
     name: "Advanced Package",
-    price: "AUD 1000",
+    price: "AUD 1100",
     ideal: "best if you want experts to handle every document and guide you through the job search",
     includes: [
       "Resume/CV Writing: 3–4 versions",
@@ -62,7 +62,7 @@ const PACKAGE_FACTS = {
   },
   ultimate: {
     name: "Ultimate Career Package",
-    price: "AUD 1700",
+    price: "AUD 1800",
     ideal: "best if you want DreamShift to apply for jobs and handle everything for you",
     includes: [
       "Resume/CV Writing: 3–4 versions",
@@ -82,9 +82,9 @@ const PACKAGE_FACTS = {
 };
 
 const INDIVIDUAL_SERVICES = [
-  "Resume/CV Writing: AUD 400 onwards",
-  "Cover Letter Writing: AUD 150 onwards",
-  "LinkedIn Optimization: AUD 450 onwards",
+  "Resume/CV Writing: AUD 500 onwards",
+  "Cover Letter Writing: AUD 200 onwards",
+  "LinkedIn Optimization: AUD 500 onwards",
 ];
 
 // ---------------------------------------------------------------------------
@@ -655,11 +655,11 @@ function buildSearchQueries(message, intent) {
   const intentQueries = {
     packages_overview: [
       "DreamShift packages Essential Advanced Ultimate Career Package prices AUD inclusions",
-      "Essential AUD 750 Advanced AUD 800 Ultimate AUD 1500 package comparison",
+      "Essential AUD 1050 Advanced AUD 1100 Ultimate AUD 1800 package comparison",
     ],
     pricing_general: [
       "DreamShift package pricing Essential Advanced Ultimate AUD",
-      "Essential AUD 750 Advanced AUD 800 Ultimate Career Package AUD 1500",
+      "Essential AUD 1050 Advanced AUD 1100 Ultimate Career Package AUD 1800",
     ],
     job_application_support: [
       "job application support Ultimate Career Package apply for jobs on behalf of client",
@@ -694,7 +694,7 @@ function buildSearchQueries(message, intent) {
       "reschedule missed call free consultation",
     ],
     individual_services: [
-      "individual services Resume CV Writing AUD 400 Cover Letter AUD 150 LinkedIn AUD 350",
+      "individual services Resume CV Writing AUD 500 Cover Letter AUD 200 LinkedIn AUD 500",
       "only need CV individual service not package",
     ],
     revisions: [
@@ -721,8 +721,8 @@ function keywordBoost(match, intent, originalMessage) {
   if ((match?.metadata?.category || "") === "critical_facts") boost += 0.2;
 
   const keywordsByIntent = {
-    packages_overview: ["essential", "advanced", "ultimate", "aud 950", "aud 1000", "aud 1700"],
-    pricing_general: ["price", "pricing", "aud 950", "aud 1000", "aud 1700"],
+    packages_overview: ["essential", "advanced", "ultimate", "aud 1050", "aud 1100", "aud 1800"],
+    pricing_general: ["price", "pricing", "aud 1050", "aud 1100", "aud 1800"],
     job_application_support: ["job application support", "ultimate", "2 months", "dedicated senior writer"],
     urgent_delivery: ["urgent", "availability", "deadline", "free consultation"],
     interview_guarantee: ["60", "interview", "50% refund", "rewrite", "75 days"],
@@ -731,7 +731,7 @@ function keywordBoost(match, intent, originalMessage) {
     not_in_australia: ["not currently in australia", "targeting australia", "migration advice", "visa advice"],
     no_australian_experience: ["australian experience", "transferable skills", "achievements"],
     missed_call_reschedule: ["reschedule", "missed", "consultation"],
-    individual_services: ["aud 400", "aud 150", "aud 450", "individual services"],
+    individual_services: ["aud 500", "aud 200", "individual services"],
     revisions: ["revisions", "1 week", "1 month"],
     process: ["whatsapp group", "job market research", "ats keyword", "questionnaire", "linkedin"],
     industry_support: ["40+ industries", "banking", "finance", "it", "manufacturing"],
@@ -831,7 +831,7 @@ function buildSystemPrompt(intent) {
     `Answer only the user’s current question. Do not add unrelated policy details.`,
     `Never invent pricing, package inclusions, guarantees, refund rules, delivery timelines, or policies.`,
     `Do not convert currencies. Use AUD when discussing current DreamShift package pricing.`,
-    `If package pricing is asked, include these prices when relevant: Essential Package AUD 750, Advanced Package AUD 800, Ultimate Career Package AUD 1500.`,
+    `If package pricing is asked, include these prices when relevant: Essential Package AUD 1050, Advanced Package AUD 1100, Ultimate Career Package AUD 1800.`,
     `If the user asks what packages DreamShift offers, include all three packages and all three prices.`,
     `If the user asks about Advanced, remember Advanced includes ongoing support until the client lands a job.`,
     `If the user asks about Ultimate, remember Ultimate includes 2 months of job application support and a dedicated senior writer.`,
