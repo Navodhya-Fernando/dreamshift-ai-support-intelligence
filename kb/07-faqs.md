@@ -14,9 +14,9 @@ No. You do not have to pay everything at once. Instalment options are available 
 
 ## Do you offer individual services?
 Yes. Individual services are available:
-- Resume/CV Writing: AUD 400 onwards
-- Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- Resume/CV Writing: AUD 500 onwards
+- Cover Letter Writing: AUD 200 onwards
+- LinkedIn Optimization: AUD 500 onwards
 
 However, most clients choose packages because they include the full job-search toolkit.
 
@@ -36,7 +36,7 @@ Yes. Revision periods depend on the package:
 - Ultimate: unlimited revisions within 1 month
 
 ## What if I only need a CV?
-Individual Resume/CV Writing is available from AUD 400 onwards. However, if you are actively job searching in Australia, a package may be more effective because it can include ATS keyword research, cover letters, LinkedIn optimization, and support.
+Individual Resume/CV Writing is available from AUD 500 onwards. However, if you are actively job searching in Australia, a package may be more effective because it can include ATS keyword research, cover letters, LinkedIn optimization, and support.
 
 ## Do you work with my industry?
 DreamShift has worked with clients across 40+ industries, including finance, IT, education, government, HR, logistics, manufacturing, retail, sales, marketing, telecommunications, hospitality, and more. If your industry is not listed, book a free consultation so the team can check your background.

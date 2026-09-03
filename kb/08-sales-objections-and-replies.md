@@ -13,7 +13,7 @@ The chatbot should prioritize these objections when answering sales-related ques
 ## Objection: Price
 User may say:
 - The package is expensive.
-- AUD 750 / AUD 800 / AUD 1500 is too much.
+- AUD 1050 / AUD 1100 / AUD 1800 is too much.
 - I only need a CV.
 - I cannot pay everything at once.
 
@@ -26,9 +26,9 @@ Recommended action:
 - If price remains the main concern, guide the user to a free consultation.
 
 Individual service fallback:
-- Resume/CV Writing: AUD 400 onwards
-- Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- Resume/CV Writing: AUD 500 onwards
+- Cover Letter Writing: AUD 250 onwards
+- LinkedIn Optimization: AUD 500 onwards
 
 ## Objection: Timing
 User may say:
