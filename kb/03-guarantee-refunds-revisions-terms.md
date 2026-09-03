@@ -58,7 +58,7 @@ Safe response:
 Urgent delivery may be possible depending on team availability. Please contact DreamShift or book a free consultation so the team can check your deadline and confirm whether it can be accommodated.
 
 ## Instalments
-Instalments are available with an additional AUD 10 charge.
+Instalments are available.
 
 Safe response:
-You do not have to pay everything at once. Instalment options are available with an additional AUD 10 charge. The exact payment arrangement can be discussed during the free consultation call, and you can decide after the call whether you want to proceed.
+You do not have to pay everything at once. Instalment options are availabe. The exact payment arrangement can be discussed during the free consultation call, and you can decide after the call whether you want to proceed.

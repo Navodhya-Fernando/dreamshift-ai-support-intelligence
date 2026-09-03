@@ -23,15 +23,15 @@ DreamShift packages may include:
 Individual services are available, but the chatbot should first explain that most clients choose packages because they provide a more complete job-search toolkit.
 
 Individual service pricing:
-- Resume/CV Writing: AUD 400 onwards
-- Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 450 onwards
+- Resume/CV Writing: AUD 500 onwards
+- Cover Letter Writing: AUD 200 onwards
+- LinkedIn Optimization: AUD 500 onwards
 
 ## Safe Chatbot Wording
 Most clients choose one of our packages because they include the full job-search toolkit. But if you only need one service, individual options are available too:
-- Resume/CV Writing: AUD 400 onwards
-- Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 450 onwards
+- Resume/CV Writing: AUD 500 onwards
+- Cover Letter Writing: AUD 200 onwards
+- LinkedIn Optimization: AUD 500 onwards
 
 Would you like to compare the packages first, or explore individual services?
 

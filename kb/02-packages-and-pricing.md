@@ -7,7 +7,7 @@ All package prices are in AUD.
 Clients do not have to pay everything at once. Instalment options are available with an additional AUD 10 charge. The exact payment arrangement can be discussed during the free consultation call, and the client can decide after the call whether they want to proceed.
 
 ## Essential Package
-Price: AUD 950
+Price: AUD 1050
 
 Payment note: You do not have to pay at once.
 
@@ -34,7 +34,7 @@ Recommend Essential when the user:
 - Is more budget-conscious but still wants a full professional package.
 
 ## Advanced Package
-Price: AUD 1000
+Price: AUD 1100
 
 Payment note: You do not have to pay at once.
 
@@ -65,7 +65,7 @@ Recommend Advanced when the user:
 - Wants stronger support than Essential.
 
 ## Ultimate Career Package
-Price: AUD 1700
+Price: AUD 1800
 
 Payment note: You do not have to pay at once.
 
@@ -111,8 +111,8 @@ Then recommend:
 
 ## Individual Service Fallback
 If the user says they only need one service, mention:
-- Resume/CV Writing: AUD 400 onwards
-- Cover Letter Writing: AUD 150 onwards
-- LinkedIn Optimization: AUD 350 onwards
+- Resume/CV Writing: AUD 500 onwards
+- Cover Letter Writing: AUD 200 onwards
+- LinkedIn Optimization: AUD 500 onwards
 
 Then ask whether they want to compare individual services or packages.
