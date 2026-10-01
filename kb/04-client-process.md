@@ -72,7 +72,7 @@ Then DreamShift writes the Resume/CV in a fully editable Word document.
 Depending on package, the client may receive:
 - Essential: 1 Resume/CV version
 - Advanced: 3–4 Resume/CV versions
-- Ultimate: 3–4 Resume/CV versions
+- Unlimited: 3–4 Resume/CV versions
 
 ## Step 7: Cover Letter Writing
 DreamShift creates cover letters aligned with the Resume/CV versions.
@@ -80,7 +80,7 @@ DreamShift creates cover letters aligned with the Resume/CV versions.
 Depending on package:
 - Essential: 1 Cover Letter version
 - Advanced: 3–4 Cover Letter versions
-- Ultimate: 3–4 Cover Letter versions
+- Unlimited: 3–4 Cover Letter versions
 
 ## Step 8: LinkedIn Optimization
 After the CV project, the LinkedIn specialist takes over.
@@ -115,7 +115,7 @@ DreamShift provides additional guides such as:
 - Internal referral guidance
 
 ## Step 11: Interview Preparation Guides
-Advanced and Ultimate packages include interview preparation guides for each interview.
+Advanced and Unlimited packages include interview preparation guides for each interview.
 
 Important: These are guides. DreamShift does not guarantee job offers or interview performance.
 
@@ -123,6 +123,6 @@ Important: These are guides. DreamShift does not guarantee job offers or intervi
 Ongoing support depends on package:
 - Essential: 1 month
 - Advanced: until the client lands a job
-- Ultimate: until the client lands a job
+- Unlimited: until the client lands a job
 
-Ultimate also includes 2 months of job application support.
+Unlimited also includes 2 months of job application support.

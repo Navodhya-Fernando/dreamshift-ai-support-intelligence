@@ -15,7 +15,7 @@ DreamShift sales team confirmed these objections:
 If a user question matches one of these objections, the chatbot should answer clearly and then guide the user toward the free consultation if the situation depends on package choice, timeline, or team availability.
 
 ## Price Response Rule
-Mention package value first. Explain that packages include a full job-search toolkit, not only a CV. If payment flexibility is the concern, explain that Advanced has payment options: AUD 999 one-time, AUD 1200 total over 2 installments, or AUD 1200 total over 3 installments. These payment plans are available only for the Advanced Package. Then offer individual services only as a secondary path.
+Mention package value first. Explain that packages include a full job-search toolkit, not only a CV. If payment flexibility is the concern, explain that Advanced has payment options: AUD 999 one-time, AUD 1100 total over 2 installments, or AUD 1200 total over 3 installments. These payment plans are available only for the Advanced Package. Then offer individual services only as a secondary path.
 
 ## Timing Response Rule
 Do not promise urgent delivery. Always say urgent delivery depends on team availability and should be confirmed by contacting DreamShift or booking a free consultation.
@@ -28,15 +28,3 @@ The user can reschedule by using the booking link or contacting DreamShift. The 
 
 ## Job Application Support Response Rule
 If the user wants DreamShift to apply for jobs, recommend the Unlimited Package and explain that it includes 2 months of job application support. Do not imply that Essential or Advanced include applying on behalf of the client.
-
-
----
-
-## Advanced Package Payment Options
-
-Advanced Package payment options:
-- AUD 999 one-time payment
-- AUD 1100 total for 2 installments
-- AUD 1200 total for 3 installments
-
-Important: These payment options are available only for the Advanced Package.

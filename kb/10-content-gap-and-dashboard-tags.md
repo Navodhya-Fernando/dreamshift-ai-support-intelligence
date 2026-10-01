@@ -11,7 +11,7 @@ This file defines categories for future analytics. It helps the system classify 
 - refund_question
 - revision_question
 - urgent_deadline
-- payment_installment
+- advanced_payment_installment
 - australia_job_search
 - visa_or_work_rights
 - no_australian_experience
@@ -31,7 +31,7 @@ This file defines categories for future analytics. It helps the system classify 
 ## Package Interest Tags
 - essential_interest
 - advanced_interest
-- ultimate_interest
+- unlimited_interest
 - individual_cv_interest
 - individual_cover_letter_interest
 - individual_linkedin_interest
@@ -39,7 +39,7 @@ This file defines categories for future analytics. It helps the system classify 
 
 ## Objection Tags
 - price_objection
-- installment_request
+- advanced_installment_request
 - guarantee_skepticism
 - job_guarantee_request
 - visa_concern
@@ -71,7 +71,7 @@ This file defines categories for future analytics. It helps the system classify 
 The future dashboard should answer:
 - Which packages are users most interested in?
 - Which objections appear most often?
-- How many users ask about instalments?
+- How many users ask about Advanced payment plans?
 - How many users ask about the guarantee?
 - Which industries or roles appear most often?
 - How many users mention 485 visa or temporary visa concerns?

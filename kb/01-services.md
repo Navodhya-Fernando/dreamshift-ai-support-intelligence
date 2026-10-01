@@ -39,7 +39,7 @@ Would you like to compare the packages first, or explore individual services?
 DreamShift creates editable Word documents tailored to the client’s target roles, job market, skills, experience, and career direction. The writing process uses existing documents, questionnaires, job market research, and ATS keyword research.
 
 ## Cover Letter Writing
-Cover letters are created to match the client’s target roles and CV versions. Advanced and Ultimate packages include 3–4 cover letter versions.
+Cover letters are created to match the client’s target roles and CV versions. Advanced and Unlimited packages include 3–4 cover letter versions.
 
 ## LinkedIn Optimization
 DreamShift focuses on both LinkedIn optimization and branding.
@@ -67,4 +67,4 @@ DreamShift analyzes relevant job titles and job descriptions to identify:
 - Recruiter expectations
 
 ## Interview Preparation Guides
-Advanced and Ultimate packages include interview preparation guides for each interview. These are guides, not a full interview coaching guarantee. DreamShift does not guarantee interview performance or job offers.
+Advanced and Unlimited packages include interview preparation guides for each interview. These are guides, not a full interview coaching guarantee. DreamShift does not guarantee interview performance or job offers.
